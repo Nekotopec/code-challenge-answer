@@ -9,8 +9,8 @@ from saver import Saver
 
 if __name__ == "__main__":
 
-    WARNING = ('Input parametrs shuold be like\n\'python3'
-               'task2.py 05 2017 1920x1080\'.')
+    WARNING = ('Input parametrs shuold be like\n\'python3 '
+               'main.py 05 2017 1920x1080\'.')
 
     if len(sys.argv) == 4:
         month, year, resolution = sys.argv[1:4]
@@ -23,7 +23,9 @@ if __name__ == "__main__":
             name_link_dict = page_parser.find_all_wallpapers(resolution)
             if len(name_link_dict) < 1:
                 print('You picked a wrong resolution.')
-            path = os.path.join(os.getcwd(), 'Wallpapers')
+            base_dir = os.path.dirname(__file__)
+            wall_dir = os.path.dirname(base_dir)
+            path = os.path.join(wall_dir, 'Wallpapers')
             if not os.path.isdir(path):
                 os.mkdir(path)
             saver = Saver(path)

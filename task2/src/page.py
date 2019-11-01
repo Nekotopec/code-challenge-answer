@@ -60,8 +60,16 @@ class PageParser():
 
     def find_all_wallpapers(self, resolution):
         """ Method that find all wallpapers with desired resolution."""
-        # compile regexp for future search
+        # Counter for nameless wallpapers
+        counter_of_nameless = 1
+
+        # Get resolution parametrs
+        res_h, res_w = re.search(r'(\d{3,4})x(\d{3,4})',
+                                 resolution).group(1, 2)
+
+        # Compile regexp for future search
         reg = re.compile(r'([\w ?!°-]+)- \b\d{3,4}x\d{3,4}\b')
+
         name_link_dict = dict()
         content_feature_panel = self.content.find_next(
             class_='feature-panel-container')
@@ -71,8 +79,15 @@ class PageParser():
 
             li = ul.find_all('li')[-1]
             for a in li.find_all('a'):
-                if resolution in a['title']:
-                    key = reg.search(a['title']).group(1)
+                if res_h in a.text and res_w in a.text:
+
+                    # Some Walls haven't Titles
+                    if a.get('title'):
+                        key = reg.search(a['title']).group(1)
+                    else:
+                        key = f'without_name{counter_of_nameless}'
+                        counter_of_nameless += 1
+
                     name_link_dict[key] = a['href']
             figure = figure.find_next('figure')
         return name_link_dict
